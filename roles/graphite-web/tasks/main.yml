@@ -1,0 +1,27 @@
+- name: install Graphite web and carbon
+  apt: pkg={{ item }} state=latest force=yes
+  with_items:
+    - gunicorn
+    - graphite-carbon
+    - python-graphite-web
+    - supervisor
+
+- name: Enable carbon-cache
+  lineinfile: dest=/etc/default/graphite-carbon regexp="CARBON_CACHE_ENABLED=false" line="CARBON_CACHE_ENABLED=true"
+
+- name: Enable carbon-cache server
+  service: name=carbon-cache state=started enabled=yes
+  notify: start carbon
+
+- name: Copy graphite.local_settings
+  copy: src=graphite.local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py
+
+- name: graphite syncdb
+  django_manage: command=syncdb app_path=/opt/graphite/webapp/graphite/
+  
+- name: Copy supervisor files
+  copy: src=graphite.supervisor dest=/etc/supervisor/conf.d/graphite-web.conf
+  notify: update supervisor
+
+- name: fix perms
+  file: path=/opt/graphite/storage/ owner=www-data group=www-data state=directory recurse=yes

@@ -1,0 +1,8 @@
+- name: start carbon
+  service: name=carbon-cache state=started
+
+- name: update supervisor
+  supervisorctl: name=graphite-web state=present
+
+- name: restart graphite-web
+  supervisorctl: name=graphite-web state=restarted

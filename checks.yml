@@ -1,0 +1,5 @@
+- hosts: theEye
+  sudo: True
+  roles:
+    - sensu-checks
+

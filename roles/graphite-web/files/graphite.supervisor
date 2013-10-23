@@ -1,0 +1,6 @@
+[program:graphite-web]
+command=/usr/bin/gunicorn_django -u www-data -g www-data -b 127.0.0.1:8081 --log-file=/opt/graphite/storage/log/webapp/gunicorn.log --settings=graphite.settings --pythonpath=/opt/graphite/webapp/ --log-level=debug
+process_name=%(program_name)s
+autostart=true
+autorestart=true
+stopsignal=QUIT

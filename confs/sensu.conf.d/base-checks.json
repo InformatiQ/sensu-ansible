@@ -1,0 +1,24 @@
+    {
+      "checks": {
+        "vmstat-metrics": {
+          "type": "metric", 
+          "handlers": ["graphite"],
+          "command": "/etc/sensu/plugins/vmstat-metrics.rb --scheme stats.:::name::: ",
+          "interval": 10,
+          "subscribers": [ "all" ]
+        },
+        "load-metrics": {
+          "type": "metric",
+          "handlers": ["graphite"],
+          "command": "/etc/sensu/plugins/load-metrics.rb --scheme stats.:::name:::",
+          "interval": 10,
+          "subscribers": [ "all" ]
+        },
+        "diskFree": {
+          "handlers": ["default"],
+          "command": "/etc/sensu/plugins/check-disk.rb -w 75 -c 90",
+          "interval": 60,
+          "subscribers": [ "all" ]
+        }
+      }
+    }

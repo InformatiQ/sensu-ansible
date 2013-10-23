@@ -1,0 +1,18 @@
+server {
+    listen     443 ssl;
+    server_name sensu.internal {{ ansible_eth0['ipv4']['address'] }};
+    ssl_certificate     /etc/ssl/private/internal.crt;
+    ssl_certificate_key /etc/ssl/private/internal.key;
+    location / {
+        proxy_pass http://localhost:8080;
+    }
+}
+server {
+    listen     443 ssl;
+    server_name graphite.internal {{ ansible_eth0['ipv4']['address'] }};
+    ssl_certificate     /etc/ssl/private/internal.crt;
+    ssl_certificate_key /etc/ssl/private/internal.key;
+    location / {
+        proxy_pass http://localhost:8081;
+    }
+}

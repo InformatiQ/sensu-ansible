@@ -1,0 +1,55 @@
+- name: Add sensu repo
+  lineinfile: dest=/etc/apt/sources.list.d/sensu.list regexp="sensuapp.org" line='deb http://repos.sensuapp.org/apt sensu main' create=yes
+  register: aptrepo
+
+- name: Add sensu aptkey
+  apt_key: url=http://repos.sensuapp.org/apt/pubkey.gpg state=present
+
+- name: Refresh apt cache
+  apt: update_cache=yes
+  when: aptrepo.changed
+
+- name: Install sensu
+  apt: name=$item state=latest force=yes
+  with_items:
+    - ruby
+    - sensu
+
+- name: Deploy config.json
+  template: src=confs/config.json.in dest=/etc/sensu/config.json owner=sensu group=sensu mode=0640
+  notify: restart sensuserver
+
+- name: Create ssl dir
+  file: path=/etc/sensu/ssl owner=sensu group=sensu mode=0750 state=directory
+
+- name: Copy ssl files
+  copy: src=certs/$item.pem dest=/etc/sensu/ssl/ owner=sensu group=sensu mode=0640
+  with_items:
+    - client_cert
+    - client_key
+  notify: 
+    - restart sensuserver
+
+- name: Configure nginx
+  template: src=confs/nginx-sensu.conf.in dest=/etc/nginx/sites-available/sensu.conf owner=root group=root mode=0640
+
+- name: Enable the sensu nginx site
+  file: src=/etc/nginx/sites-available/sensu.conf dest=/etc/nginx/sites-enabled/sensu.conf state=link
+
+- name: setup graphite handler
+  template: src=confs/sensu.conf.d/{{ item }} dest=/etc/sensu/conf.d/{{item }} owner=sensu group=sensu mode=0750
+  with_items:
+    - graphite_tcp.json
+    - handler_graphite.json
+
+- name: setup handlers
+  copy: src=confs/sensu.conf.d/{{ item }} dest=/etc/sensu/conf.d/{{item }} owner=sensu group=sensu mode=0750
+  with_items:
+    - handler_flowdock.json
+    - handler_default.json
+    - handler_mail-ses.json
+
+- name: Install ruby flowdock libs
+  apt: name=$item state=latest force=yes
+  with_items:
+    - ruby-flowdock

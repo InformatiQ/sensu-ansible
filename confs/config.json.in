@@ -1,0 +1,27 @@
+{
+      "rabbitmq": {
+        "ssl": {
+          "private_key_file": "/etc/sensu/ssl/client_key.pem",
+          "cert_chain_file": "/etc/sensu/ssl/client_cert.pem"
+        },
+        "port": 5671,
+        "host": "{{ hostvars[groups['theEye'][0]]['ansible_eth0']['ipv4']['address'] }}",
+        "user": "sensu",
+        "password": "{{ amqp_sensu_password }}",
+        "vhost": "/sensu"
+      },
+      "redis": {
+        "host": "127.0.0.1",
+        "port": 6379
+      },
+      "api": {
+        "host": "{{ hostvars[groups['theEye'][0]]['ansible_eth0']['ipv4']['address'] }}",
+        "port": 4567
+      },
+      "dashboard": {
+        "host": "{{ hostvars[groups['theEye'][0]]['ansible_eth0']['ipv4']['address'] }}",
+        "port": 8080,
+        "user": "admin",
+        "password": "{{ sensu_dashboard_password }}"
+      }
+}

@@ -1,0 +1,30 @@
+- name: Add sensu repo
+  action: lineinfile dest=/etc/apt/sources.list.d/sensu.list regexp="sensuapp.org" line='deb http://repos.sensuapp.org/apt sensu main' create=yes
+
+- name: Add sensu aptkey
+  action: apt_key url=http://repos.sensuapp.org/apt/pubkey.gpg state=present
+
+- name: Install sensu-plugins
+  action: apt name=$item state=latest force=yes
+  with_items:
+    - ruby-sensu-plugin
+    - sensu
+
+- name: Deploy config.json
+  action: template src=confs/config.json.in dest=/etc/sensu/config.json owner=sensu group=sensu mode=0640
+  notify: restart sensuserver
+
+- name: Deploy client.config
+  action: template src=confs/client.json.in dest=/etc/sensu/conf.d/client.json owner=sensu group=sensu mode=0640
+  notify: restart sensuserver
+
+- name: Create ssl dir
+  file: path=/etc/sensu/ssl owner=sensu group=sensu mode=0750 state=directory
+
+- name: Copy ssl files
+  action: copy src=certs/$item.pem dest=/etc/sensu/ssl/ owner=sensu group=sensu mode=0640
+  with_items:
+    - client_cert
+    - client_key
+  notify: 
+    - restart sensuserver

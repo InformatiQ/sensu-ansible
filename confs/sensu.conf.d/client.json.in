@@ -1,0 +1,8 @@
+    {
+      "client": {
+        "name": "{{ ansible_hostname }}",
+        "address": "{{ hostvars[groups['theEye'][0]]['ansible_eth0']['ipv4']['address'] }}",
+        "subscriptions":["{{ ",".join(group_names) }}"]
+      }
+    }
+

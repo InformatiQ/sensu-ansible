@@ -1,0 +1,9 @@
+- name: Install nginx
+  apt: pkg=nginx state=latest
+
+- name: Copy SSL files
+  copy: src={{ item }} dest=/etc/ssl/private/
+  with_items:
+    - server.crt
+    - server.key
+

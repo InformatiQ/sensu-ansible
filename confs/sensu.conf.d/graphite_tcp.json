@@ -1,0 +1,6 @@
+{
+  "graphite": {
+    "server":"{{ hostvars[groups['theEye'][0]]['ansible_eth0']['ipv4']['address'] }}",
+    "port":"2003"
+  }
+}

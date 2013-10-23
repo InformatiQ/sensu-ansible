@@ -1,0 +1,5 @@
+{
+  "flowdock": {
+    "auth_token": "{{ flowdock_token }}"
+  }
+}

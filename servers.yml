@@ -1,0 +1,11 @@
+- hosts: theEye
+  sudo: True
+  vars_files: 
+    - "vars/main.yml"
+  roles:
+    - redis
+    - rabbitmq
+    - nginx
+    - sensu-server
+    - graphite-web
+

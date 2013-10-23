@@ -1,0 +1,9 @@
+- name: install checks package
+  apt: pkg=sensu-checks state=latest force=yes
+
+- name: setup base checks
+  template: src=confs/sensu.conf.d/{{ item }} dest=/etc/sensu/conf.d/{{ item }} owner=sensu group=sensu mode=0750
+  with_items:
+    - base-checks.json
+    - handler_flowdock.json
+  notify: restart server and api

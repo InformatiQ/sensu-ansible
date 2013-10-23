@@ -1,0 +1,20 @@
+{
+  "handlers": {
+      "default": {
+        "type": "set",
+        "handlers": ["flowdock","mail-ses"]
+      },
+      "flowdock": {
+        "type": "pipe",
+        "command": "/etc/sensu/handlers/flowdock.rb"
+      },
+      "mail-ses": {
+        "type": "pipe",
+        "command": "/etc/sensu/handlers/mailer-ses.rb"
+        "severities": [
+          "warning",
+          "critical"
+        ]
+      }
+  }
+}

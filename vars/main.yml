@@ -1,0 +1,6 @@
+amqp_sensu_password: 
+sensu_dashboard_password: 
+sensu_db_password: 
+flowdock_token: 
+aws_ses_access_key: 
+aws_ses_secret_key: 
